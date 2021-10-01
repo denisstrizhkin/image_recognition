@@ -1,19 +1,35 @@
 #ifndef NEURAL_NET
 #define	NEURAL_NET 
 
+#include <cstdint>
+#include <iostream>
+
 class Matrix
 {
 private:
-  size_t m;
-	size_t n;
+  uint16_t m;
+  uint16_t n;
 	double* array;
 
 public:
-	Matrix(const size_t in_m, const size_t in_n);
+  // Constructors
+	Matrix(const uint16_t in_m, const uint16_t in_n);
+	Matrix(const double* in_array,
+      const uint16_t in_m, const uint16_t in_n);
 	Matrix();
-	~Matrix();
-	Matrix(Matrix* other);
-	Matrix* operator=(Matrix* other);
+  Matrix(const Matrix& in_matrix);
+
+  // Destructor
+  ~Matrix();
+
+
+  // Operator overloading	
+	Matrix operator=(const Matrix& in_matrix);
+  void Print();
+
+  // Functions
+  uint16_t N();
+  uint16_t M();
 
 	float Sum();
 	void Ones();
@@ -25,8 +41,6 @@ public:
 	Matrix* T();
 	Matrix* Dot(Matrix* M);
 	Matrix* Apply_f(float (*func)(float));
-
-	void Print();
 };
 
 float sigmoid(float n);
