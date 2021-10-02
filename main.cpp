@@ -9,23 +9,13 @@ float func(float num)
 
 int main()
 {
-  Matrix m;
-
-  std::cout << m.N() << '\n';
-  std::cout << m.M() << '\n';
-
-  double numbers[6] = { 0.5, 0.3, 0.4, 0.6, 0.8, 0.2 };
-  Matrix num_matrix(numbers, 3, 2);
-  num_matrix.Print();
-
-  for (unsigned i = 0; i < 10000000; i++)
+  for (int i = 0; i < 1000000; i++)
   {
+    Matrix m1(10000, 1);
+    Matrix m2(1, 10000);
+
+    Matrix m3 = m1.Dot(m2).T().T().T().Dot(m1);
+
     std::cout << "i: " << i << '\n';
-    Matrix temp(10000, 10000);
-    Matrix a;
-
-    a = temp;
-
-    Matrix b = temp;
   }
 }
