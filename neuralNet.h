@@ -1,47 +1,70 @@
 #ifndef NEURAL_NET
 #define	NEURAL_NET 
 
-#include <cstdint>
 #include <iostream>
+#include <vector>
 
 class Matrix
 {
 private:
-  uint16_t m;
-  uint16_t n;
-	double* array;
+  size_t m_;
+  size_t n_;
+	double* array_;
+
+  class DimensionsException : public std::exception
+  {
+    virtual const char* what() const noexcept;
+  };
+
+  class WrongIndexException : public std::exception
+  {
+    virtual const char* what() const noexcept;
+  };
 
 public:
   // Constructors
-	Matrix(const uint16_t in_m, const uint16_t in_n);
-	Matrix(const double* in_array,
-      const uint16_t in_m, const uint16_t in_n);
-	Matrix();
+  Matrix(size_t _m, size_t _n);
+  Matrix(const std::vector<double>& in_vector, size_t _m, size_t _n);
+  Matrix();
   Matrix(const Matrix& in_matrix);
-
+  
   // Destructor
   ~Matrix();
-
-
+  
   // Operator overloading	
-	Matrix operator=(const Matrix& in_matrix);
-  void Print();
-
+  // =
+  Matrix operator=(const Matrix& in_matrix);
+  // + 
+  Matrix operator+(const Matrix& in_matrix);
+  friend Matrix operator+(double in_num, const Matrix& in_matrix);
+  friend Matrix operator+(const Matrix& in_matrix, double in_num);
+  // -
+  Matrix operator-(const Matrix& in_matrix);
+  friend Matrix operator-(double in_num, const Matrix& in_matrix);
+  friend Matrix operator-(const Matrix& in_matrix, double in_num);
+  // *
+  Matrix operator*(const Matrix& in_matrix);
+  friend Matrix operator*(double in_num, const Matrix& in_matrix);
+  friend Matrix operator*(const Matrix& in_matrix, double in_num); 
+  // /
+  Matrix operator/(const Matrix& in_matrix);
+  friend Matrix operator/(double in_num, const Matrix& in_matrix);
+  friend Matrix operator/(const Matrix& in_matrix, double in_num); 
+  
   // Functions
-  uint16_t N();
-  uint16_t M();
-
-	float Sum();
-	void Ones();
-	void rnd();
-	Matrix* Plus(Matrix* M);
-	Matrix* Plus(float num);
-	Matrix* Mult(Matrix* M);
-	Matrix* Mult(float num);
-	Matrix* T();
-	Matrix* Dot(Matrix* M);
-	Matrix* Apply_f(float (*func)(float));
+  double& At(size_t i_m, size_t i_n); 
+  size_t N();
+  size_t M();  
+  void Print(); 
+  double Sum();
+  Matrix T();
+  Matrix Dot(const Matrix& in_matrix);
 };
+
+//Matrix* Dot(Matrix* M);
+//Matrix* Apply_f(float (*func)(float));
+//void Ones();
+//void rnd();
 
 float sigmoid(float n);
 float sigmoid_d(float n);
