@@ -3,4 +3,4 @@ project(image_recognition)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(image_recognition main.cpp)
+add_executable(image_recognition main.cpp matrix.cpp matrix.h)
