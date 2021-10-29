@@ -35,3 +35,35 @@ Matrix& Matrix::operator=(const Matrix& matrix)
   for (size_t i = 0; i < m_ * n_; i++) this->array_[i] = matrix.array_[i];
   return *this;
 }
+
+Matrix& Matrix::operator+=(const Matrix& matrix)
+{
+  if (this->m_ != matrix.m_ || this->n_ != matrix.n_) throw WrongDimensions();
+  for (size_t i = 0; i < this->m_ * this->n_; i++)
+    this->array_[i] += matrix.array_[i];
+  return *this;
+}
+
+Matrix& Matrix::operator*=(const Matrix& matrix)
+{
+  if (this->m_ != matrix.m_ || this->n_ != matrix.n_) throw WrongDimensions();
+  for (size_t i = 0; i < this->m_ * this->n_; i++)
+    this->array_[i] *= matrix.array_[i];
+  return *this;
+}
+
+Matrix& Matrix::operator/=(const Matrix& matrix)
+{
+  if (this->m_ != matrix.m_ || this->n_ != matrix.n_) throw WrongDimensions();
+  for (size_t i = 0; i < this->m_ * this->n_; i++)
+    this->array_[i] /= matrix.array_[i];
+  return *this;
+}
+
+Matrix& Matrix::operator-=(const Matrix& matrix)
+{
+  if (this->m_ != matrix.m_ || this->n_ != matrix.n_) throw WrongDimensions();
+  for (size_t i = 0; i < this->m_ * this->n_; i++)
+    this->array_[i] -= matrix.array_[i];
+  return *this;
+}
