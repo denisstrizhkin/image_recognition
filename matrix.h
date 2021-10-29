@@ -10,11 +10,11 @@ private:
   double *array_ = nullptr;
 
   class WrongDimensions : public std::exception {
-    virtual const char *what() const noexcept;
+    [[nodiscard]] const char *what() const noexcept override;
   };
 
   class WrongIndex : public std::exception {
-    virtual const char *what() const noexcept;
+    [[nodiscard]] const char *what() const noexcept override;
   };
 
 public:
@@ -22,7 +22,7 @@ public:
   Matrix();
   Matrix(size_t m, size_t n);
   Matrix(const std::vector<double> &vector, size_t m, size_t n);
-  Matrix(const std::vector<std::vector<double>> &vector);
+  explicit Matrix(const std::vector<std::vector<double>> &vector);
   Matrix(const Matrix &matrix);
 
   // Main operators overloading
@@ -34,14 +34,14 @@ public:
 
   // Access functions
   double& at(size_t i_m, size_t i_n);
-  double at(size_t i_m, size_t i_n) const;
-  size_t m() const;
-  size_t n() const;
+  [[nodiscard]] double at(size_t i_m, size_t i_n) const;
+  [[nodiscard]] size_t m() const;
+  [[nodiscard]] size_t n() const;
 
   // Other functions
-  Matrix T() const;
-  Matrix Dot(const Matrix& matrix) const;
-  double Sum() const;
+  [[nodiscard]] Matrix T() const;
+  [[nodiscard]] Matrix Dot(const Matrix& matrix) const;
+  [[nodiscard]] double Sum() const;
 
   // Destructor
   ~Matrix();
@@ -67,7 +67,7 @@ Matrix operator/(double num, const Matrix& matrix);
 
 // Other matrix functions
 void PrintMatrix(const Matrix& matrix);
-void FillMatrix(Matrix& matrix);
+void FillMatrix(Matrix& matrix, double num);
 void RandomizeMatrix(Matrix& matrix);
 
 #endif //IMAGE_RECOGNITION_MATRIX_H_
