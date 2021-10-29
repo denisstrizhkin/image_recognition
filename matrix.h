@@ -32,9 +32,42 @@ public:
   Matrix& operator-=(const Matrix& matrix);
   Matrix& operator/=(const Matrix& matrix);
 
+  // Access functions
+  double& at(size_t i_m, size_t i_n);
+  double at(size_t i_m, size_t i_n) const;
+  size_t m() const;
+  size_t n() const;
+
+  // Other functions
+  Matrix T() const;
+  Matrix Dot(const Matrix& matrix) const;
+  double Sum() const;
+
   // Destructor
   ~Matrix();
 };
 
+// Other operator overloading variants
+// +
+Matrix operator+(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator+(const Matrix& matrix, double num);
+Matrix operator+(double num, const Matrix& matrix);
+// -
+Matrix operator-(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator-(const Matrix& matrix, double num);
+Matrix operator-(double num, const Matrix& matrix);
+// *
+Matrix operator*(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator*(const Matrix& matrix, double num);
+Matrix operator*(double num, const Matrix& matrix);
+// /
+Matrix operator/(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator/(const Matrix& matrix, double num);
+Matrix operator/(double num, const Matrix& matrix);
 
-#endif //IMAGE_RECOGNITION_MATRIX_H
+// Other matrix functions
+void PrintMatrix(const Matrix& matrix);
+void FillMatrix(Matrix& matrix);
+void RandomizeMatrix(Matrix& matrix);
+
+#endif //IMAGE_RECOGNITION_MATRIX_H_
