@@ -1,6 +1,8 @@
 #include "matrix.h"
 
 Matrix::Matrix() {}
+size_t Matrix::m() const { return m_; }
+size_t Matrix::n() const { return n_; }
 
 Matrix::Matrix(size_t m, size_t n) {
   m_ = m;
@@ -67,3 +69,12 @@ Matrix& Matrix::operator-=(const Matrix& matrix)
     this->array_[i] -= matrix.array_[i];
   return *this;
 }
+
+double Matrix::at(size_t i_m, size_t i_n) const {
+  return array_[i_m * n_ + i_n];
+}
+
+double& Matrix::at(size_t i_m, size_t i_n) {
+  return array_[i_m * n_ + i_n];
+}
+
