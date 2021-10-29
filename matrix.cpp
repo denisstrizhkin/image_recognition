@@ -24,3 +24,14 @@ Matrix::Matrix(const std::vector<std::vector<double>> &vector)
 Matrix::Matrix(const Matrix &matrix) : Matrix(matrix.m_, matrix.n_) {
   for (size_t i = 0; i < m_ * n_; i++) this->array_[i] = matrix.array_[i];
 }
+
+Matrix& Matrix::operator=(const Matrix& matrix)
+{
+  if (this == &matrix) return *this;
+  delete[] this->array_;
+  this->m_ = matrix.m_;
+  this->n_ = matrix.n_;
+  this->array_ = new double[this->m_ * this->n_];
+  for (size_t i = 0; i < m_ * n_; i++) this->array_[i] = matrix.array_[i];
+  return *this;
+}
