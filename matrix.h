@@ -25,6 +25,13 @@ public:
   Matrix(const std::vector<std::vector<double>> &vector);
   Matrix(const Matrix &matrix);
 
+  // Main operators overloading
+  Matrix& operator=(const Matrix& matrix);
+  Matrix& operator*=(const Matrix& matrix);
+  Matrix& operator+=(const Matrix& matrix);
+  Matrix& operator-=(const Matrix& matrix);
+  Matrix& operator/=(const Matrix& matrix);
+
   // Destructor
   ~Matrix();
 
