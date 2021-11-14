@@ -115,6 +115,16 @@ void RandomizeMatrix(Matrix& matrix) {
   }
 }
 
+Matrix ApplyFunc(const Matrix& matrix, double (*func)(double)) {
+  Matrix result = matrix;
+  for (size_t i_m = 0; i_m < matrix.m(); i_m++) {
+    for (size_t i_n = 0; i_n < matrix.n(); i_n++) {
+      result.at(i_m, i_n) = func(matrix.at(i_m, i_n));
+    }
+  }
+  return result;
+}
+
 Matrix Matrix::Dot(const Matrix& matrix) const {
   if (this->n_ != matrix.m_) throw WrongDimensions();
   Matrix dot_result(this->m_, matrix.n_);
@@ -152,6 +162,12 @@ Matrix operator+(const Matrix& matrix_1, const Matrix& matrix_2) {
   return tmp_matrix_1 += matrix_2;
 }
 
+Matrix operator+=(Matrix& matrix, double num) {
+  Matrix num_matrix(matrix.m(), matrix.n());
+  FillMatrix(num_matrix, num);
+  return matrix += num_matrix;
+}
+
 Matrix operator+(const Matrix& matrix, double num) {
   Matrix num_matrix(matrix.m(), matrix.n());
   FillMatrix(num_matrix, num);
@@ -165,6 +181,12 @@ Matrix operator+(double num, const Matrix& matrix) {
 Matrix operator-(const Matrix& matrix_1, const Matrix& matrix_2) {
   Matrix tmp_matrix_1 = matrix_1;
   return tmp_matrix_1 -= matrix_2;
+}
+
+Matrix operator-=(Matrix& matrix, double num) {
+  Matrix num_matrix(matrix.m(), matrix.n());
+  FillMatrix(num_matrix, num);
+  return matrix -= num_matrix;
 }
 
 Matrix operator-(const Matrix& matrix, double num) {
@@ -182,6 +204,12 @@ Matrix operator*(const Matrix& matrix_1, const Matrix& matrix_2) {
   return tmp_matrix_1 *= matrix_2;
 }
 
+Matrix operator*=(Matrix& matrix, double num) {
+  Matrix num_matrix(matrix.m(), matrix.n());
+  FillMatrix(num_matrix, num);
+  return matrix *= num_matrix;
+}
+
 Matrix operator*(const Matrix& matrix, double num) {
   Matrix num_matrix(matrix.m(), matrix.n());
   FillMatrix(num_matrix, num);
@@ -195,6 +223,12 @@ Matrix operator*(double num, const Matrix& matrix) {
 Matrix operator/(const Matrix& matrix_1, const Matrix& matrix_2) {
   Matrix tmp_matrix_1 = matrix_1;
   return tmp_matrix_1 /= matrix_2;
+}
+
+Matrix operator/=(Matrix& matrix, double num) {
+  Matrix num_matrix(matrix.m(), matrix.n());
+  FillMatrix(num_matrix, num);
+  return matrix /= num_matrix;
 }
 
 Matrix operator/(const Matrix& matrix, double num) {

@@ -50,25 +50,30 @@ class Matrix {
 // Other operator overloading variants
 // +
 Matrix operator+(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator+=(Matrix& matrix, double num);
 Matrix operator+(const Matrix& matrix, double num);
 Matrix operator+(double num, const Matrix& matrix);
 // -
 Matrix operator-(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator-=(Matrix& matrix, double num);
 Matrix operator-(const Matrix& matrix, double num);
 Matrix operator-(double num, const Matrix& matrix);
 // *
 Matrix operator*(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator*=(Matrix& matrix, double num);
 Matrix operator*(const Matrix& matrix, double num);
 Matrix operator*(double num, const Matrix& matrix);
 
 // /
 Matrix operator/(const Matrix& matrix_1, const Matrix& matrix_2);
+Matrix operator/=(Matrix& matrix, double num);
 Matrix operator/(const Matrix& matrix, double num);
 Matrix operator/(double num, const Matrix& matrix);
 
 // Other matrix functions
 void PrintMatrix(const Matrix& matrix);
 void FillMatrix(Matrix& matrix, double num);
+Matrix ApplyFunc(const Matrix& matrix, double (*func)(double));
 void RandomizeMatrix(Matrix& matrix);
 
 #endif  // IMAGE_RECOGNITION_MATRIX_H_
