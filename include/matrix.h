@@ -4,26 +4,26 @@
 #include <vector>
 
 class Matrix {
-private:
+ private:
   size_t m_ = 0;
   size_t n_ = 0;
-  double *array_ = nullptr;
+  double* array_ = nullptr;
 
   class WrongDimensions : public std::exception {
-    [[nodiscard]] const char *what() const noexcept override;
+    [[nodiscard]] const char* what() const noexcept override;
   };
 
   class WrongIndex : public std::exception {
-    [[nodiscard]] const char *what() const noexcept override;
+    [[nodiscard]] const char* what() const noexcept override;
   };
 
-public:
+ public:
   // Constructors
   Matrix();
   Matrix(size_t m, size_t n);
-  Matrix(const std::vector<double> &vector, size_t m, size_t n);
-  explicit Matrix(const std::vector<std::vector<double>> &vector);
-  Matrix(const Matrix &matrix);
+  Matrix(const std::vector<double>& vector, size_t m, size_t n);
+  explicit Matrix(const std::vector<std::vector<double>>& vector);
+  Matrix(const Matrix& matrix);
 
   // Main operators overloading
   Matrix& operator=(const Matrix& matrix);
@@ -60,6 +60,7 @@ Matrix operator-(double num, const Matrix& matrix);
 Matrix operator*(const Matrix& matrix_1, const Matrix& matrix_2);
 Matrix operator*(const Matrix& matrix, double num);
 Matrix operator*(double num, const Matrix& matrix);
+
 // /
 Matrix operator/(const Matrix& matrix_1, const Matrix& matrix_2);
 Matrix operator/(const Matrix& matrix, double num);
@@ -70,4 +71,4 @@ void PrintMatrix(const Matrix& matrix);
 void FillMatrix(Matrix& matrix, double num);
 void RandomizeMatrix(Matrix& matrix);
 
-#endif //IMAGE_RECOGNITION_MATRIX_H_
+#endif  // IMAGE_RECOGNITION_MATRIX_H_

@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
-project(image_recognition)
-
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(image_recognition main.cpp matrix.cpp matrix.h)
+project(image_recognition VERSION 1.0)
+
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
+add_executable(image_recognition ${SRC_FILES})
+target_include_directories(image_recognition PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
