@@ -30,7 +30,7 @@ Neurons forward(const std::vector<Matrix>& w, const std::vector<Matrix>& b,
 void train(std::vector<Matrix>& w, std::vector<Matrix>& b, double alpha,
            int iter, const Matrix& x, const Matrix& y, int step);
 
-std::vector<Matrix> gen_weights(int n);
-std::vector<Matrix> gen_bias(int n);
+[[nodiscard]] Matrix gen_weights(unsigned n_1, unsigned n_2);
+[[nodiscard]] Matrix gen_biases(unsigned n);
 
 #endif

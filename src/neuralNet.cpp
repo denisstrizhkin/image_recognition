@@ -81,38 +81,16 @@ void train(std::vector<Matrix>& w, std::vector<Matrix>& b, double alpha,
   }
 }
 
-std::vector<Matrix> gen_weights(int n) {
-  std::vector<Matrix> w;
+Matrix gen_weights(unsigned n1, unsigned n2) {
+  Matrix w(n2, n1);
+  RandomizeMatrix(w);
 
-  Matrix m_1(n, 1);
-  RandomizeMatrix(m_1);
-  m_1 -= 0.5;
-
-  w.push_back(m_1);
-
-  Matrix m_2(1, n);
-  RandomizeMatrix(m_2);
-  m_2 -= 0.5;
-
-  w.push_back(m_2);
-
-  return w;
+  return w - 0.5;
 }
 
-std::vector<Matrix> gen_bias(int n) {
-  std::vector<Matrix> b;
+Matrix gen_biases(unsigned n) {
+  Matrix b(n, 1);
+  RandomizeMatrix(b); 
 
-  Matrix m_1(n, 1);
-  RandomizeMatrix(m_1);
-  m_1 -= 0.5;
-
-  b.push_back(m_1);
-
-  Matrix m_2(1, 1);
-  RandomizeMatrix(m_2);
-  m_2 -= 0.5;
-
-  b.push_back(m_2);
-
-  return b;
+  return b - 0.5;
 }
