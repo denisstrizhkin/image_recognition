@@ -17,10 +17,14 @@ struct Neurons {
 
 double sigmoid(double n);
 double sigmoid_d(double n);
+
 double relu(double n);
 double relu_d(double n);
+
 double tanhh(double n);
 double tanh_d(double n);
+
+[[nodiscard]] Matrix softmax(const Matrix& matrix);
 
 double loss_f(double out, double target);
 Matrix loss_f_d(const Matrix& out, const Matrix& target);

@@ -28,16 +28,27 @@ Matrix loss_f_d(const Matrix& out, const Matrix& target) {
   return (-2) * (target - out);
 }
 
+Matrix softmax(const Matrix& matrix) {
+  Matrix result = ApplyFunc(matrix, [](double n){return std::exp(n);});
+  double sum = result.Sum();
+
+  return result / sum;
+}
+
 Neurons forward(const std::vector<Matrix>& w, const std::vector<Matrix>& b,
                 const Matrix& x) {
   std::vector<Matrix> z;
   std::vector<Matrix> a;
 
+  std::cout << "w: " << w[0].m() << ", " << w[0].n() << '\n';
+  std::cout << "w: " << x.m() << ", " << x.n() << '\n';
   z.push_back(w[0].Dot(x) + b[0]);
-  a.push_back(ApplyFunc(z[0], sigmoid));
+  a.push_back(ApplyFunc(z[0], relu));
+  std::cout << "after 1st weights\n";
 
   z.push_back(w[1].Dot(a[0]) + b[1]);
-  a.push_back(z[1]);
+  a.push_back(softmax(z[1]));
+  std::cout << "after 2nd weights\n";
 
   return {z, a};
 }
@@ -48,17 +59,20 @@ void train(std::vector<Matrix>& w, std::vector<Matrix>& b, double alpha,
     double loss = 0.0;
 
     for (int j = 0; j < x.m(); j++) {
-      Matrix x_batch(1, x.n());
+      Matrix x_batch(x.n(), 1);
       for (int i_n = 0; i_n < x.n(); i_n++) {
-        x_batch.at(0, i_n) = x.at(j, i_n);
+        x_batch.at(i_n, 0) = x.at(j, i_n);
       }
+      std::cout << "got x_batch\n";
 
-      Matrix y_batch(1, y.n());
+      Matrix y_batch(y.n(), 1);
       for (int i_n = 0; i_n < y.n(); i_n++) {
-        y_batch.at(0, i_n) = y.at(j, i_n);
+        y_batch.at(i_n, 0) = y.at(j, i_n);
       }
+      std::cout << "got y_batch\n";
 
       Neurons neurons = forward(w, b, x_batch);
+      std::cout << "forward completed\n";
       std::vector<Matrix> a = neurons.a;
       std::vector<Matrix> z = neurons.z;
 
