@@ -75,7 +75,7 @@ void train(std::vector<Matrix>& w, std::vector<Matrix>& b, double alpha,
       b[0] = b[0] - alpha * d_z[0].Sum();
     }
     if ((i + 1) % step == 0) {
-      std::cout << "iteration #" << i + 1 << ": loss: " << std::setw(8)
+      std::cout << "iteration #" << std::setw(6) << i + 1 << ": loss: " << std::setw(8)
                 << loss / x.m() << '\n';
     }
   }

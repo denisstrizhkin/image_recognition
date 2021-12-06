@@ -22,7 +22,7 @@ int main() {
 
   Matrix x = Matrix(x_data, 10, 1);
   Matrix y = ApplyFunc(x, func);
-
+  
   for (int i = 0; i < 10; i++) std::cout << y.at(i, 0) << ' ';
   std::cout << '\n';
 
