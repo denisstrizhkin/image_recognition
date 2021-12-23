@@ -7,7 +7,14 @@ class Mat {
  private:
   size_t m_ = 0;
   size_t n_ = 0;
+  size_t count_ = 0;
+
   float* arr_ = nullptr;
+
+  [[nodiscard]] float* begin() const;
+  [[nodiscard]] float* end()   const;
+
+  void SetDim(size_t m, size_t n);
 
  public:
   // Constructors
