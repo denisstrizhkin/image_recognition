@@ -11,9 +11,6 @@ class Mat {
 
   float* arr_ = nullptr;
 
-  [[nodiscard]] float* begin() const;
-  [[nodiscard]] float* end()   const;
-
   void SetDim(size_t m, size_t n);
 
  public:
@@ -56,8 +53,12 @@ class Mat {
   // Other mat functions
   void Print();
   void Fill(float num);
-  [[nodiscard]] Mat ApplyFunc(float (*func)(float));
+  [[nodiscard]] Mat ApplyFunc(float (*func)(float)) const;
   static void Randomize(Mat& mat);
+
+  // Pointers
+  [[nodiscard]] float* begin() const;
+  [[nodiscard]] float* end()   const;
 
   // Access functions
   float& at(size_t m_i, size_t n_i);
