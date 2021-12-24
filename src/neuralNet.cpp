@@ -1,110 +1,155 @@
 #include "neuralNet.h"
 
-#include <cmath>
 #include <iomanip>
+#include <cmath>
 #include <iostream>
 
-double sigmoid(double n) { return 1 / (1 + std::exp(-n)); }
-double sigmoid_d(double n) {
-  double sn = sigmoid(n);
-  return sn * (1 - sn);
+Mat NeuralNet::ReLu(const Mat& mat) {
+  std::cout << "in relu\n";
+  return mat.ApplyFunc([](float num){ return ( num > 0 ? num : 0 ); });
 }
 
-double relu(double n) { return std::max(0.0, n); }
-double relu_d(double n) { return (n > 0 ? 1 : 0); }
+Mat NeuralNet::SoftMax(const Mat& mat) {
+  Mat new_mat(mat.ApplyFunc([](float num) { return std::exp(num); }));
 
-double tanhh(double n) { return std::tanh(n); }
-double tanh_d(double n) {
-  double tn = std::tanh(n);
-  return 1 - tn * tn;
+  for (size_t n_i = 0; n_i < new_mat.n(); n_i++) {
+    float sum = 0.0f;
+    for (size_t m_i = 0; m_i < new_mat.m(); m_i++)
+      sum += new_mat.at(m_i, n_i);
+
+    for (size_t m_i = 0; m_i < new_mat.m(); m_i++)
+      new_mat.at(m_i, n_i) /= sum;
+  }
+
+  return new_mat;
 }
 
-double loss_f(double out, double target) {
-  double diff = target - out;
-  return diff * diff;
+void NeuralNet::ForwardAll(const Mat& x, std::vector<Mat>& z, std::vector<Mat>& a) {
+  ForwardSingle(x, weights_.at(0), biases_.at(0), z.at(0), a.at(0), ReLu);
+  std::cout << "imput layer: ok\n";
+
+  size_t i = 1;
+  for (; i < weights_.size() - 1; i++)
+    ForwardSingle(a.at(i-1), weights_.at(i), biases_.at(i), z.at(i), a.at(i), ReLu);
+  std::cout << "hidden layers: ok\n";
+
+  ForwardSingle(a.at(i-1), weights_.at(i), biases_.at(i), z.at(i), a.at(i), SoftMax);
+  std::cout << "softmax layer: ok\n";
 }
 
-Matrix loss_f_d(const Matrix& out, const Matrix& target) {
-  return (-2) * (target - out);
+void NeuralNet::ForwardSingle(const Mat& a_prev, const Mat& w, const Mat& b,
+    Mat& z, Mat& a, Mat (*act_func)(const Mat&)) {
+  Mat bt(b.m(), a_prev.n());
+  for (size_t n_i = 0; n_i < bt.n(); n_i++)
+    for (size_t m_i = 0; m_i < bt.m(); m_i++)
+      bt.at(m_i, n_i) = b.at(m_i, 0);
+
+  dim(a_prev, "a_p");
+  dim(w, "w");
+  dim(bt, "bt");
+
+  z = w.Dot(a_prev) + bt;
+
+  dim(z, "z");
+  a = act_func(z);
+  dim(a, "a");
 }
 
-Matrix softmax(const Matrix& matrix) {
-  Matrix result = ApplyFunc(matrix, [](double n){return std::exp(n);});
-  double sum = result.Sum();
+NeuralNet::NeuralNet(const std::vector<size_t>& topology) : topology_(topology){
+  for (size_t i = 1; i < topology_.size(); i++) {
+    weights_.emplace_back(Mat(topology_.at(i), topology_.at(i-1)));
+    biases_.emplace_back( Mat(topology_.at(i),                  1));
 
-  return result / sum;
-}
-
-Neurons forward(const std::vector<Matrix>& w, const std::vector<Matrix>& b,
-                const Matrix& x) {
-  std::vector<Matrix> z;
-  std::vector<Matrix> a;
-
-  std::cout << "w: " << w[0].m() << ", " << w[0].n() << '\n';
-  std::cout << "w: " << x.m() << ", " << x.n() << '\n';
-  z.push_back(w[0].Dot(x) + b[0]);
-  a.push_back(ApplyFunc(z[0], relu));
-  std::cout << "after 1st weights\n";
-
-  z.push_back(w[1].Dot(a[0]) + b[1]);
-  a.push_back(softmax(z[1]));
-  std::cout << "after 2nd weights\n";
-
-  return {z, a};
-}
-
-void train(std::vector<Matrix>& w, std::vector<Matrix>& b, double alpha,
-           int num_of_iterations, const Matrix& x, const Matrix& y, int step) {
-  for (int i = 0; i < num_of_iterations; i++) {
-    double loss = 0.0;
-
-    for (int j = 0; j < x.m(); j++) {
-      Matrix x_batch(x.n(), 1);
-      for (int i_n = 0; i_n < x.n(); i_n++) {
-        x_batch.at(i_n, 0) = x.at(j, i_n);
-      }
-      std::cout << "got x_batch\n";
-
-      Matrix y_batch(y.n(), 1);
-      for (int i_n = 0; i_n < y.n(); i_n++) {
-        y_batch.at(i_n, 0) = y.at(j, i_n);
-      }
-      std::cout << "got y_batch\n";
-
-      Neurons neurons = forward(w, b, x_batch);
-      std::cout << "forward completed\n";
-      std::vector<Matrix> a = neurons.a;
-      std::vector<Matrix> z = neurons.z;
-
-      loss += loss_f(a[1].at(0, 0), y_batch.at(0, 0));
-
-      std::vector<Matrix> d_z = {Matrix(0, 0), Matrix(0, 0)};
-      d_z[1] = loss_f_d(a[1], y_batch);
-      d_z[0] = w[1].T().Dot(d_z[1]) * ApplyFunc(z[0], sigmoid_d);
-
-      w[1] = w[1] - alpha * d_z[1].Dot(a[0].T());
-      b[1] = b[1] - alpha * d_z[1].Sum();
-
-      w[0] = w[0] - alpha * d_z[0].Dot(x_batch);
-      b[0] = b[0] - alpha * d_z[0].Sum();
-    }
-    if ((i + 1) % step == 0) {
-      std::cout << "iteration #" << std::setw(6) << i + 1 << ": loss: " << std::setw(8)
-                << loss / x.m() << '\n';
-    }
+    Mat::Randomize(weights_.at(i-1));
+    Mat::Randomize(biases_.at( i-1));
   }
 }
 
-Matrix gen_weights(unsigned n1, unsigned n2) {
-  Matrix w(n2, n1);
-  RandomizeMatrix(w);
+double NeuralNet::GetAccuracy(const Mat& labels, const Mat& pred) {
+  std::vector<float> result(labels.n());
+  std::cout << "accuracy: " << result.size() << '\n';
 
-  return w - 0.5;
+  for (size_t n_i = 0; n_i < labels.n(); n_i++) {
+    float max = 0.0f;
+    size_t max_i = 0;
+
+    for (size_t m_i = 0; m_i < pred.m(); m_i++)
+      if (pred.at(m_i, n_i) > max) {
+        max = pred.at(m_i, n_i);
+        max_i = m_i;
+      }
+
+    result.at(n_i) = max_i;
+  }
+
+  double sum = 0.0;
+
+  for (size_t n_i = 0; n_i < labels.n(); n_i++)
+    if (labels.at(0, n_i) == result.at(n_i))
+      sum += 1;
+
+  std::cout << "sum: " << sum << '\n';
+  return sum / pred.n();
 }
 
-Matrix gen_biases(unsigned n) {
-  Matrix b(n, 1);
-  RandomizeMatrix(b); 
+void NeuralNet::dim(const Mat& mat, std::string name) {
+  std::cout << name << ": " << mat.m() << ", " << mat.n() << '\n';
+}
 
-  return b - 0.5;
+
+Mat NeuralNet::GetSumVector(const Mat& matrix) {
+  Mat result(matrix.m(), 1);
+
+  for (size_t m_i = 0; m_i < matrix.m(); m_i++) {
+    result.at(m_i, 0) = 0.0f;
+    for (size_t n_i = 0; n_i < matrix.n(); n_i++) {
+      result.at(m_i, 0) += matrix.at(m_i, n_i);
+    }
+    result.at(m_i, 0) /= matrix.n();
+  }
+
+  return result;
+}
+
+void NeuralNet::Train(const Mat& x, const Mat& y, const Mat& labels,
+    unsigned n_epoch, float alpha) {
+  std::vector<Mat> d_z(topology_.size() - 1);
+  std::vector<Mat> z(  topology_.size() - 1);
+  std::vector<Mat> a(  topology_.size() - 1);
+
+  for (unsigned epoch = 0; epoch < n_epoch; epoch++) {
+    std::cout << "before forward\n";
+    ForwardAll(x, z, a);
+    std::cout << "after forward\n";
+
+    double accuracy = GetAccuracy(labels, a.back());
+    std::cout << "after loss\n";
+
+    d_z.back() = a.back() - y;
+    std::cout << "after 1st dz\n";
+    std::cout << "d_z: " << d_z.size() << '\n';
+    for (size_t i = d_z.size() - 1; i > 0; i--) {
+      dim(weights_.at(i).T(), "w"+std::to_string(i)); dim(d_z.at(i), "dzi");
+      d_z.at(i-1) = weights_.at(i).T().Dot(d_z.at(i)) *
+        z.at(i-1).ApplyFunc([](float num){ return ( num > 0 ? 1.0f : 0.0f ); });
+    }
+    std::cout << "after d_z\n";
+
+    for (size_t i = weights_.size() - 1; i > 0; i--)
+      weights_.at(i) -= alpha * d_z.at(i).Dot(a.at(i-1).T());
+    weights_.at(0) -= alpha * d_z.at(0).Dot(x.T());
+    std::cout << "after dw\n";
+
+    for (size_t i = weights_.size() - 1; i > 0; i--)
+      biases_.at(i) -= alpha * GetSumVector(d_z.at(i));
+    std::cout << "after db\n";
+
+    //dim(w[0], "w[0]");
+    //dim(d_z[0], "d_z[0]");
+    //dim(x_data, "x_data");
+    //
+    std::cout << "epoch #" << std::setw(6) << epoch + 1
+      << ": accuracy: " << std::setw(8)
+                << accuracy << '\n';
+  }
 }

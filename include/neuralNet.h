@@ -1,40 +1,34 @@
 #ifndef NEURAL_NET
 #define NEURAL_NET
 
-#include <vector>
-
 #include "matrix.h"
+#include "string"
 
-// Matrix* Dot(Matrix* M);
-// Matrix* Apply_f(double (*func)(double));
-// void Ones();
-// void rnd();
+class NeuralNet {
+ private:
+  std::vector<size_t> topology_;
+  std::vector<Mat> weights_;
+  std::vector<Mat> biases_;
 
-struct Neurons {
-  std::vector<Matrix> z;
-  std::vector<Matrix> a;
+  static Mat ReLu(const Mat& mat);
+  static Mat SoftMax(const Mat& mat);
+
+  void ForwardAll(const Mat& x, std::vector<Mat>& z, std::vector<Mat>& a);
+
+  void ForwardSingle(const Mat& a_prev, const Mat& w, const Mat& b,
+      Mat& z, Mat& a, Mat (*act_func)(const Mat&));
+
+ public:
+  NeuralNet(const std::vector<size_t>& topology);
+
+  double GetAccuracy(const Mat& labels, const Mat& pred);
+
+  void dim(const Mat& mat, std::string name);
+
+  Mat GetSumVector(const Mat& matrix);
+
+  void Train(const Mat& x, const Mat& y, const Mat& labels,
+      unsigned n_epoch, float alpha);
 };
 
-double sigmoid(double n);
-double sigmoid_d(double n);
-
-double relu(double n);
-double relu_d(double n);
-
-double tanhh(double n);
-double tanh_d(double n);
-
-[[nodiscard]] Matrix softmax(const Matrix& matrix);
-
-double loss_f(double out, double target);
-Matrix loss_f_d(const Matrix& out, const Matrix& target);
-
-Neurons forward(const std::vector<Matrix>& w, const std::vector<Matrix>& b,
-                const Matrix& x);
-void train(std::vector<Matrix>& w, std::vector<Matrix>& b, double alpha,
-           int iter, const Matrix& x, const Matrix& y, int step);
-
-[[nodiscard]] Matrix gen_weights(unsigned n_1, unsigned n_2);
-[[nodiscard]] Matrix gen_biases(unsigned n);
-
-#endif
+#endif // NEURAL_NET
