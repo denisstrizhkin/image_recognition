@@ -1,5 +1,5 @@
-#ifndef LAB5_RANDOM_H_
-#define LAB5_RANDOM_H_
+#ifndef IMAGE_RECOGNITION_RANDOM_H_
+#define IMAGE_RECOGNITION_RANDOM_H_
 
 #include <chrono>
 #include <random>
@@ -8,7 +8,7 @@ class Random {
  private:
    std::default_random_engine rnd_engine_;
    std::uniform_real_distribution<float> distrib_ =
-     std::uniform_real_distribution<float>(0.0f, 1.0f);
+     std::uniform_real_distribution<float>(-0.5f, 0.5f);
 
  public:
   Random() {
@@ -19,4 +19,4 @@ class Random {
   [[nodiscard]] float operator()() { return distrib_(rnd_engine_); }
 };
 
-#endif // LAB5_RANDOM_H_
+#endif // IMAGE_RECOGNITION_RANDOM_H_

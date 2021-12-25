@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 
+namespace OCV {
 struct Data {
   Mat x;
   Mat y;
@@ -17,8 +18,9 @@ struct Data {
 [[nodiscard]] uint32_t SwapEndian(uint32_t val);
 
 [[nodiscard]] Data ReadMNIST(const std::string& image_filename,
-    const std::string& label_filename);
+    const std::string& label_filename, unsigned num_items);
 
 void ShowImage(const Data& data, size_t index);
+};
 
 #endif

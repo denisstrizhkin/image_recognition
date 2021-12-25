@@ -4,13 +4,13 @@
 
 #include "opencv.h"
 
-uint32_t SwapEndian(uint32_t val) {
+uint32_t OCV::SwapEndian(uint32_t val) {
     val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
     return (val << 16) | (val >> 16);
 }
 
-Data ReadMNIST(const std::string& image_filename,
-    const std::string& label_filename) {
+OCV::Data OCV::ReadMNIST(const std::string& image_filename,
+    const std::string& label_filename, unsigned num_items_assigned) {
   // Open files
   std::ifstream image_file(image_filename, std::ios::in | std::ios::binary);
   std::ifstream label_file(label_filename, std::ios::in | std::ios::binary);
@@ -19,7 +19,7 @@ Data ReadMNIST(const std::string& image_filename,
   uint32_t magic;
   uint32_t num_items;
   uint32_t num_labels;
-  
+
   Data data;
 
   image_file.read(reinterpret_cast<char*>(&magic), 4);
@@ -36,6 +36,7 @@ Data ReadMNIST(const std::string& image_filename,
   image_file.read(reinterpret_cast<char*>(&data.cols), 4);
   data.cols = SwapEndian(data.cols);
 
+  num_items = std::min(num_items, num_items_assigned);
   std::cout << "image and label num is: " << num_items << '\n';
   std::cout << "image rows: " << data.rows << ", cols: " << data.cols << '\n';
 
@@ -64,7 +65,7 @@ Data ReadMNIST(const std::string& image_filename,
   return data;
 }
 
-void ShowImage(const Data& data, size_t index) {
+void OCV::ShowImage(const Data& data, size_t index) {
     std::vector<char> pixels(data.x.n());
     float* p = data.x.begin() + index*data.x.n();
     std::copy(p, p+data.x.n(), pixels.begin());

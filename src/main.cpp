@@ -1,30 +1,28 @@
 #include <cmath>
 #include <iostream>
-#include <filesystem>
 
-
-#include "neuralNet.h"
+#include "neural_net.h"
+#include "prog_path.h"
 #include "opencv.h" // kinda works wow
 
-
 int main(int argc, char** argv) {
-  std::string base_dir = std::filesystem::current_path().generic_string()
-    + "/../data/";
-  std::string img_path = base_dir + "train-images-idx3-ubyte";
-  std::string label_path = base_dir + "train-labels-idx1-ubyte";
+  std::string data_path = ProgPath::Get() + "/../data/";
 
-  //Data data = ReadMNIST(img_path, label_path);
+  std::string train_images = data_path + "train-images-idx3-ubyte";
+  std::string train_labels = data_path + "train-labels-idx1-ubyte";
 
+  std::string test_images = data_path + "t10k-images-idx3-ubyte";
+  std::string test_labels = data_path + "t10k-labels-idx1-ubyte";
 
-  //NeuralNet nnet({784, 10, 10});
+  OCV::Data train_data = OCV::ReadMNIST(train_images, train_labels, 60000);
+  OCV::Data test_data  = OCV::ReadMNIST(test_images, test_labels, 10000); 
 
-  //for (size_t i = 0; i < y_data.size(); i++) {
-  //  y_data.at(i).resize(10);
-  //  for (float& num : y_data.at(i)) num = 0.0;
-  //  y_data.at(i).at(data.labels.at(i)) = 1.0;
-  //}
+  NeuralNet nnet({784, 10, 10});
 
-  //nnet.Train(x, y, lbls, step, alpha);
+  nnet.Train(train_data.x.T()/255, train_data.y.T(),
+      train_data.labels.T(), 500, 2);
+
+  nnet.Test(test_data.x.T()/255, test_data.y.T(), test_data.labels.T());
 
   return 0;
 }

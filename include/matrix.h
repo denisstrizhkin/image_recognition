@@ -51,7 +51,7 @@ class Mat {
   friend Mat operator/(float num, const Mat& mat);
 
   // Other mat functions
-  void Print();
+  void Print() const;
   void Fill(float num);
   [[nodiscard]] Mat ApplyFunc(float (*func)(float)) const;
   static void Randomize(Mat& mat);

@@ -30,14 +30,12 @@ void Mat::SetDim(size_t m, size_t n) {
 }
 
 Mat::Mat(size_t m, size_t n) {
-  std::cout << m << ' ' << n << '\n';
   SetDim(m, n);
   arr_ = new float[count_];
 }
 
 Mat::Mat(const std::vector<float>& vec, size_t m, size_t n)
     : Mat(m, n) {
-      std::cout << count_ << '\n';
   if (vec.size() != count_) ThrowDim();
   std::copy(vec.begin(), vec.end(), begin());
 }
@@ -103,7 +101,7 @@ void Mat::Fill(float num) {
   std::fill(begin(), end(), num);
 }
 
-void Mat::Print() {
+void Mat::Print() const {
   std::cout << "--- m(" << m_ << "):n(" << n_ << ")\n";
   for (float* p = begin(); p < end(); p+=n_) {
     std::for_each(p, p+n_, [](float n){ std::cout << std::setw(8) << n; });
@@ -119,7 +117,6 @@ void Mat::Randomize(Mat& mat) {
 
 Mat Mat::ApplyFunc(float (*func)(float)) const {
   Mat result(*this);
-  std::cout << result.m() << result.n() << '\n';
   std::for_each(result.begin(), result.end(),
       [&func](float& n){ n = func(n); });
   return result;
