@@ -7,8 +7,8 @@
 class Random {
  private:
    std::default_random_engine rnd_engine_;
-   std::uniform_real_distribution<float> distrib_ =
-     std::uniform_real_distribution<float>(-0.5f, 0.5f);
+   std::uniform_real_distribution<double> distrib_ =
+     std::uniform_real_distribution<double>(-0.5f, 0.5f);
 
  public:
   Random() {
@@ -16,7 +16,7 @@ class Random {
     rnd_engine_ = std::default_random_engine(seed);
   }
   
-  [[nodiscard]] float operator()() { return distrib_(rnd_engine_); }
+  [[nodiscard]] double operator()() { return distrib_(rnd_engine_); }
 };
 
 #endif // IMAGE_RECOGNITION_RANDOM_H_

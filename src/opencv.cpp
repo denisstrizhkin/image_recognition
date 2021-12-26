@@ -67,7 +67,7 @@ OCV::Data OCV::ReadMNIST(const std::string& image_filename,
 
 void OCV::ShowImage(const Data& data, size_t index) {
     std::vector<char> pixels(data.x.n());
-    float* p = data.x.begin() + index*data.x.n();
+    double* p = data.x.begin() + index*data.x.n();
     std::copy(p, p+data.x.n(), pixels.begin());
 
     unsigned label = data.labels.at(index, 0);

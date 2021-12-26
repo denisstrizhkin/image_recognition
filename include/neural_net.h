@@ -26,14 +26,14 @@ class NeuralNet {
       const std::vector<Mat>& z, const std::vector<Mat>& a,
       std::vector<Mat>& dw, std::vector<Mat>& db) const;
 
-  void UpdateParameters(float alpha,
+  void UpdateParameters(double alpha,
       const std::vector<Mat>& dw, const std::vector<Mat>& db);
 
  public:
   NeuralNet(const std::vector<size_t>& topology);
 
   void Train(const Mat& x, const Mat& y, const Mat& labels,
-      unsigned n_epoch, float alpha);
+      unsigned n_epoch, double alpha);
 
   void Test(const Mat& x, const Mat& y, const Mat& labels) const;
 };
